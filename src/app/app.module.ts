@@ -8,6 +8,8 @@ import { CrisisListComponent } from './crisis-list/crisis-list.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { HeroesModule } from './heroes/heroes.module';
 import { FormsModule } from '@angular/forms';
+import { CrisisCenterModule } from './crisis-center/crisis-center.module';
+
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { FormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     FormsModule,
     HeroesModule,
-    AppRoutingModule
+    CrisisCenterModule,
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
