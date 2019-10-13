@@ -7,8 +7,6 @@ import { ComposeMessageComponent } from './compose-message/compose-message.compo
 
 
 const routes: Routes = [
-  // { path: 'crisis-center', component: CrisisListComponent },
-  // { path: 'heroes', component: HeroListComponent},
   { path: '', redirectTo: '/heroes', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent },
   { path: 'compose', component: ComposeMessageComponent, outlet: 'popup' }

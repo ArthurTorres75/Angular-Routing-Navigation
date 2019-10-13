@@ -9,6 +9,8 @@ import { HeroesModule } from './heroes/heroes.module';
 import { FormsModule } from '@angular/forms';
 import { CrisisCenterModule } from './crisis-center/crisis-center.module';
 import { ComposeMessageComponent } from './compose-message/compose-message.component';
+import { AdminModule } from './admin/admin.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @NgModule({
@@ -23,6 +25,8 @@ import { ComposeMessageComponent } from './compose-message/compose-message.compo
     FormsModule,
     HeroesModule,
     CrisisCenterModule,
+    AdminModule,
+    AuthModule,
     AppRoutingModule,
   ],
   providers: [],

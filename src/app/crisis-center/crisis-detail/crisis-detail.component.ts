@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { Crisis } from '../crisis';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Router } from '@angular/router';
-import { CrisisService } from '../crisis.service';
-import { switchMap } from 'rxjs/operators';
+import { Crisis }         from '../crisis';
+import { DialogService }  from '../../dialog.service';
 
 @Component({
   selector: 'app-crisis-detail',
@@ -13,33 +11,48 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./crisis-detail.component.css']
 })
 export class CrisisDetailComponent implements OnInit {
-
-  crisis$: Observable<Crisis>;
+  crisis: Crisis;
+  editName: string;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: CrisisService
-  ) { }
+    public dialogService: DialogService
+  ) {}
 
   ngOnInit() {
-    // 1era forma si detail hero es reutilizable en la misma vista
-    this.crisis$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) => this.service.getCrisis(params.get('id')))
-    );
-    // this.hero$.subscribe((data) => console.log(data)); // si no te suscribes al observable no lo puedes ver o usar
-    // aqui el async del lado del html hace la suscripcion sin necesidad de hacer desde el codigo y le agrega un alias
-    // 2da forma si detail hero se usa en otra vista aparte y navega la ruta hacia su componente
-    // let id = this.route.snapshot.paramMap.get('id');
-
-    // this.hero$ = this.service.getHero(id);
+    this.route.data
+      .subscribe((data: { crisis: Crisis }) => {
+        this.editName = data.crisis.name;
+        this.crisis = data.crisis;
+      });
   }
 
-  gotoCrises(crisis: Crisis) {
-    let crisisId = crisis ? crisis.id : null;
-    // Pass along the hero id if available
-    // so that the HeroList component can select that hero.
-    // Include a junk 'foo' property for fun.
-    this.router.navigate(['../', {id: crisisId, foo: 'foo'}], { relativeTo: this.route });
+  cancel() {
+    this.gotoCrises();
+  }
+
+  save() {
+    this.crisis.name = this.editName;
+    this.gotoCrises();
+  }
+
+  canDeactivate(): Observable<boolean> | boolean {
+    // Allow synchronous navigation (`true`) if no crisis or the crisis is unchanged
+    if (!this.crisis || this.crisis.name === this.editName) {
+      return true;
+    }
+    // Otherwise ask the user with the dialog service and return its
+    // observable which resolves to true or false when the user decides
+    return this.dialogService.confirm('Discard changes?');
+  }
+
+  gotoCrises() {
+    let crisisId = this.crisis ? this.crisis.id : null;
+    // Pass along the crisis id if available
+    // so that the CrisisListComponent can select that crisis.
+    // Add a totally useless `foo` parameter for kicks.
+    // Relative navigation back to the crises
+    this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.route });
   }
 }
